@@ -39,13 +39,17 @@ function SimpleUploadAdapterStrapiPlugin( editor ) {
 	};
 }
 
+function Markdown( editor ) {
+	editor.data.processor = new GFMDataProcessor( editor.editing.view.document );
+}
+
 export default class ClassicEditor extends ClassicEditorBase {}
 
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
 	Essentials,
 	UploadAdapter,
-	GFMDataProcessor,
+	Markdown,
 	CodeBlock,
 	Autoformat,
 	Bold,
