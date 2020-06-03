@@ -29,6 +29,15 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import SimpleUploadAdapterStrapi from 'ckeditor5-upload-strapi';
+
+function SimpleUploadAdapterStrapiPlugin( editor ) {
+	editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
+		return new SimpleUploadAdapterStrapi( loader );
+	};
+}
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -36,6 +45,8 @@ export default class ClassicEditor extends ClassicEditorBase {}
 ClassicEditor.builtinPlugins = [
 	Essentials,
 	UploadAdapter,
+	GFMDataProcessor,
+	CodeBlock,
 	Autoformat,
 	Bold,
 	Italic,
@@ -56,7 +67,8 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	SimpleUploadAdapterStrapiPlugin
 ];
 
 // Editor configuration.
@@ -68,6 +80,8 @@ ClassicEditor.defaultConfig = {
 			'bold',
 			'italic',
 			'link',
+			'codeBlock',
+			'|',
 			'bulletedList',
 			'numberedList',
 			'|',
@@ -91,11 +105,7 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
