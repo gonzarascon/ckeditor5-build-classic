@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,11 @@
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -28,16 +30,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import SimpleUploadAdapterStrapi from './uploadAdapterStrapi';
 import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import SimpleUploadAdapterStrapi from 'ckeditor5-upload-strapi';
-
-function SimpleUploadAdapterStrapiPlugin( editor ) {
-	editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
-		return new SimpleUploadAdapterStrapi( loader );
-	};
-}
 
 function Markdown( editor ) {
 	editor.data.processor = new GFMDataProcessor( editor.editing.view.document );
@@ -49,8 +44,10 @@ export default class ClassicEditor extends ClassicEditorBase {}
 ClassicEditor.builtinPlugins = [
 	Essentials,
 	UploadAdapter,
+	Alignment,
 	Markdown,
 	CodeBlock,
+	Code,
 	Autoformat,
 	Bold,
 	Italic,
@@ -71,8 +68,7 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation,
-	SimpleUploadAdapterStrapiPlugin
+	SimpleUploadAdapterStrapi
 ];
 
 // Editor configuration.
@@ -84,11 +80,13 @@ ClassicEditor.defaultConfig = {
 			'bold',
 			'italic',
 			'link',
+			'code',
 			'codeBlock',
 			'|',
 			'bulletedList',
 			'numberedList',
 			'|',
+			'alignment',
 			'indent',
 			'outdent',
 			'|',
@@ -110,6 +108,18 @@ ClassicEditor.defaultConfig = {
 	},
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+	},
+	link: {
+		decorators: {
+			addTargetToLinks: {
+				mode: 'manual',
+				label: 'Openen in een nieuw venster (_blank, no-follow)',
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer nofollow'
+				}
+			}
+		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
