@@ -31,7 +31,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import SimpleUploadAdapterStrapi from './uploadAdapterStrapi';
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
+import GFMDataProcessor from './ckeditor5-markdown-gfm-2/src/gfmdataprocessor';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 
 function Markdown( editor ) {
