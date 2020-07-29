@@ -31,7 +31,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import SimpleUploadAdapterStrapi from './uploadAdapterStrapi';
-import GFMDataProcessor from './ckeditor5-markdown-gfm/src/gfmdataprocessor';
+import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 
 function Markdown( editor ) {
@@ -113,7 +113,7 @@ ClassicEditor.defaultConfig = {
 		decorators: {
 			addTargetToLinks: {
 				mode: 'manual',
-				label: 'Openen in een nieuw venster (_blank, no-follow)',
+				label: 'Abrir en una nueva ventana (_blank, no-follow)',
 				attributes: {
 					target: '_blank',
 					rel: 'noopener noreferrer nofollow'
@@ -122,5 +122,5 @@ ClassicEditor.defaultConfig = {
 		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+	language: 'es'
 };

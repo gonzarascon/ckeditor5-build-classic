@@ -5,7 +5,7 @@
 	} else if (typeof define === "function" && define.amd) {
 		define([], f);
 	} else {
-		let g;
+		var g;
 		if (typeof window !== "undefined") {
 			g = window;
 		} else if (typeof global !== "undefined") {
@@ -18,26 +18,22 @@
 		g.toMarkdown = f();
 	}
 })(function () {
-	let define, module, exports;
+	var define, module, exports;
 	return (function e(t, n, r) {
 		function s(o, u) {
 			if (!n[o]) {
 				if (!t[o]) {
-					const a = typeof require == "function" && require;
-					if (!u && a) {
-						return a(o, !0);
-					}
-					if (i) {
-						return i(o, !0);
-					}
-					const f = new Error("Cannot find module '" + o + "'");
+					var a = typeof require == "function" && require;
+					if (!u && a) return a(o, !0);
+					if (i) return i(o, !0);
+					var f = new Error("Cannot find module '" + o + "'");
 					throw ((f.code = "MODULE_NOT_FOUND"), f);
 				}
-				const l = (n[o] = { exports: {} });
+				var l = (n[o] = { exports: {} });
 				t[o][0].call(
 					l.exports,
 					function (e) {
-						const n = t[o][1][e];
+						var n = t[o][1][e];
 						return s(n ? n : e);
 					},
 					l,
@@ -51,9 +47,7 @@
 			return n[o].exports;
 		}
 		var i = typeof require == "function" && require;
-		for (let o = 0; o < r.length; o++) {
-			s(r[o]);
-		}
+		for (var o = 0; o < r.length; o++) s(r[o]);
 		return s;
 	})(
 		{
@@ -69,18 +63,18 @@
 
 					"use strict";
 
-					let toMarkdown;
-					let converters;
-					const mdConverters = require("./lib/md-converters");
-					const gfmConverters = require("./lib/gfm-converters");
-					const HtmlParser = require("./lib/html-parser");
-					const collapse = require("collapse-whitespace");
+					var toMarkdown;
+					var converters;
+					var mdConverters = require("./lib/md-converters");
+					var gfmConverters = require("./lib/gfm-converters");
+					var HtmlParser = require("./lib/html-parser");
+					var collapse = require("collapse-whitespace");
 
 					/*
 					 * Utilities
 					 */
 
-					const blocks = [
+					var blocks = [
 						"address",
 						"article",
 						"aside",
@@ -138,7 +132,7 @@
 						);
 					}
 
-					const voids = [
+					var voids = [
 						"area",
 						"base",
 						"br",
@@ -164,7 +158,7 @@
 					}
 
 					function htmlToDom(string) {
-						const tree = new HtmlParser().parseFromString(
+						var tree = new HtmlParser().parseFromString(
 							string,
 							"text/html"
 						);
@@ -177,20 +171,19 @@
 					 */
 
 					function bfsOrder(node) {
-						const inqueue = [node];
-						const outqueue = [];
-						let elem;
-						let children;
-						let i;
+						var inqueue = [node];
+						var outqueue = [];
+						var elem;
+						var children;
+						var i;
 
 						while (inqueue.length > 0) {
 							elem = inqueue.shift();
 							outqueue.push(elem);
 							children = elem.childNodes;
 							for (i = 0; i < children.length; i++) {
-								if (children[i].nodeType === 1) {
+								if (children[i].nodeType === 1)
 									inqueue.push(children[i]);
-								}
 							}
 						}
 						outqueue.shift();
@@ -202,15 +195,13 @@
 					 */
 
 					function getContent(node) {
-						let text = "";
-						for (let i = 0; i < node.childNodes.length; i++) {
+						var text = "";
+						for (var i = 0; i < node.childNodes.length; i++) {
 							if (node.childNodes[i].nodeType === 1) {
 								text += node.childNodes[i]._replacement;
 							} else if (node.childNodes[i].nodeType === 3) {
 								text += node.childNodes[i].data;
-							} else {
-								continue;
-							}
+							} else continue;
 						}
 						return text;
 					}
@@ -244,9 +235,9 @@
 					}
 
 					function isFlankedByWhitespace(side, node) {
-						let sibling;
-						let regExp;
-						let isFlanked;
+						var sibling;
+						var regExp;
+						var isFlanked;
 
 						if (side === "left") {
 							sibling = node.previousSibling;
@@ -270,16 +261,12 @@
 					}
 
 					function flankingWhitespace(node) {
-						let leading = "";
-						let trailing = "";
+						var leading = "";
+						var trailing = "";
 
 						if (!isBlock(node)) {
-							const hasLeading = /^[ \r\n\t]/.test(
-								node.innerHTML
-							);
-							const hasTrailing = /[ \r\n\t]$/.test(
-								node.innerHTML
-							);
+							var hasLeading = /^[ \r\n\t]/.test(node.innerHTML);
+							var hasTrailing = /[ \r\n\t]$/.test(node.innerHTML);
 
 							if (
 								hasLeading &&
@@ -295,7 +282,7 @@
 							}
 						}
 
-						return { leading, trailing };
+						return { leading: leading, trailing: trailing };
 					}
 
 					/*
@@ -304,8 +291,8 @@
 					 */
 
 					function process(node) {
-						let replacement;
-						let content = getContent(node);
+						var replacement;
+						var content = getContent(node);
 
 						// Remove blank nodes
 						if (
@@ -317,8 +304,8 @@
 							return;
 						}
 
-						for (let i = 0; i < converters.length; i++) {
-							const converter = converters[i];
+						for (var i = 0; i < converters.length; i++) {
+							var converter = converters[i];
 
 							if (canConvert(node, converter.filter)) {
 								if (
@@ -329,7 +316,7 @@
 									);
 								}
 
-								const whitespace = flankingWhitespace(node);
+								var whitespace = flankingWhitespace(node);
 
 								if (whitespace.leading || whitespace.trailing) {
 									content = content.trim();
@@ -359,9 +346,9 @@
 						// Escape potential ol triggers
 						input = input.replace(/(\d+)\. /g, "$1\\. ");
 
-						const clone = htmlToDom(input).body;
-						const nodes = bfsOrder(clone);
-						let output;
+						var clone = htmlToDom(input).body;
+						var nodes = bfsOrder(clone);
+						var output;
 
 						converters = mdConverters.slice(0);
 						if (options.gfm) {
@@ -373,7 +360,7 @@
 						}
 
 						// Process through nodes in reverse (so deepest child elements are first).
-						for (let i = nodes.length - 1; i >= 0; i--) {
+						for (var i = nodes.length - 1; i >= 0; i--) {
 							process(nodes[i]);
 						}
 						output = getContent(clone);
@@ -402,57 +389,55 @@
 					"use strict";
 
 					function cell(content, node) {
-						const index = Array.prototype.indexOf.call(
+						var index = Array.prototype.indexOf.call(
 							node.parentNode.childNodes,
 							node
 						);
-						let prefix = " ";
-						if (index === 0) {
-							prefix = "| ";
-						}
+						var prefix = " ";
+						if (index === 0) prefix = "| ";
 						return prefix + content + " |";
 					}
 
-					const highlightRegEx = /highlight highlight-(\S+)/;
+					var highlightRegEx = /highlight highlight-(\S+)/;
 
 					module.exports = [
 						{
 							filter: "br",
-							replacement() {
+							replacement: function () {
 								return "\n";
 							},
 						},
 						{
 							filter: ["del", "s", "strike"],
-							replacement(content) {
+							replacement: function (content) {
 								return "~~" + content + "~~";
 							},
 						},
 
 						{
-							filter(node) {
+							filter: function (node) {
 								return (
 									node.type === "checkbox" &&
 									node.parentNode.nodeName === "LI"
 								);
 							},
-							replacement(content, node) {
+							replacement: function (content, node) {
 								return (node.checked ? "[x]" : "[ ]") + " ";
 							},
 						},
 
 						{
 							filter: ["th", "td"],
-							replacement(content, node) {
+							replacement: function (content, node) {
 								return cell(content, node);
 							},
 						},
 
 						{
 							filter: "tr",
-							replacement(content, node) {
-								let borderCells = "";
-								const alignMap = {
+							replacement: function (content, node) {
+								var borderCells = "";
+								var alignMap = {
 									left: ":--",
 									right: "--:",
 									center: ":-:",
@@ -460,18 +445,17 @@
 
 								if (node.parentNode.nodeName === "THEAD") {
 									for (
-										let i = 0;
+										var i = 0;
 										i < node.childNodes.length;
 										i++
 									) {
-										const align =
+										var align =
 											node.childNodes[i].attributes.align;
-										let border = "---";
+										var border = "---";
 
-										if (align) {
+										if (align)
 											border =
 												alignMap[align.value] || border;
-										}
 
 										borderCells += cell(
 											border,
@@ -489,28 +473,28 @@
 
 						{
 							filter: "table",
-							replacement(content) {
+							replacement: function (content) {
 								return "\n\n" + content + "\n\n";
 							},
 						},
 
 						{
 							filter: ["thead", "tbody", "tfoot"],
-							replacement(content) {
+							replacement: function (content) {
 								return content;
 							},
 						},
 
 						// Fenced code blocks
 						{
-							filter(node) {
+							filter: function (node) {
 								return (
 									node.nodeName === "PRE" &&
 									node.firstChild &&
 									node.firstChild.nodeName === "CODE"
 								);
 							},
-							replacement(content, node) {
+							replacement: function (content, node) {
 								return (
 									"\n\n```\n" +
 									node.firstChild.textContent +
@@ -521,7 +505,7 @@
 
 						// Syntax-highlighted code blocks
 						{
-							filter(node) {
+							filter: function (node) {
 								return (
 									node.nodeName === "PRE" &&
 									node.parentNode.nodeName === "DIV" &&
@@ -530,8 +514,8 @@
 									)
 								);
 							},
-							replacement(content, node) {
-								const language = node.parentNode.className.match(
+							replacement: function (content, node) {
+								var language = node.parentNode.className.match(
 									highlightRegEx
 								)[1];
 								return (
@@ -545,13 +529,13 @@
 						},
 
 						{
-							filter(node) {
+							filter: function (node) {
 								return (
 									node.nodeName === "DIV" &&
 									highlightRegEx.test(node.className)
 								);
 							},
-							replacement(content) {
+							replacement: function (content) {
 								return "\n\n" + content + "\n\n";
 							},
 						},
@@ -565,16 +549,15 @@
 					 * Set up window for Node.js
 					 */
 
-					const _window =
-						typeof window !== "undefined" ? window : this;
+					var _window = typeof window !== "undefined" ? window : this;
 
 					/*
 					 * Parsing HTML strings
 					 */
 
 					function canParseHtmlNatively() {
-						const Parser = _window.DOMParser;
-						let canParse = false;
+						var Parser = _window.DOMParser;
+						var canParse = false;
 
 						// Adapted from https://gist.github.com/1129031
 						// Firefox/Opera/IE throw errors on unsupported types
@@ -589,11 +572,11 @@
 					}
 
 					function createHtmlParser() {
-						const Parser = function () {};
+						var Parser = function () {};
 
 						// For Node.js environments
 						if (typeof document === "undefined") {
-							const jsdom = require("jsdom");
+							var jsdom = require("jsdom");
 							Parser.prototype.parseFromString = function (
 								string
 							) {
@@ -609,7 +592,7 @@
 								Parser.prototype.parseFromString = function (
 									string
 								) {
-									const doc = document.implementation.createHTMLDocument(
+									var doc = document.implementation.createHTMLDocument(
 										""
 									);
 									doc.open();
@@ -621,7 +604,7 @@
 								Parser.prototype.parseFromString = function (
 									string
 								) {
-									const doc = new window.ActiveXObject(
+									var doc = new window.ActiveXObject(
 										"htmlfile"
 									);
 									doc.designMode = "on"; // disable on-page scripts
@@ -636,16 +619,14 @@
 					}
 
 					function shouldUseActiveX() {
-						let useActiveX = false;
+						var useActiveX = false;
 
 						try {
 							document.implementation
 								.createHTMLDocument("")
 								.open();
 						} catch (e) {
-							if (window.ActiveXObject) {
-								useActiveX = true;
-							}
+							if (window.ActiveXObject) useActiveX = true;
 						}
 
 						return useActiveX;
@@ -664,24 +645,24 @@
 					module.exports = [
 						{
 							filter: "p",
-							replacement(content) {
+							replacement: function (content) {
 								return "\n\n" + content + "\n\n";
 							},
 						},
 
 						{
 							filter: "br",
-							replacement() {
+							replacement: function () {
 								return "  \n";
 							},
 						},
 
 						{
 							filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
-							replacement(content, node) {
-								const hLevel = node.nodeName.charAt(1);
-								let hPrefix = "";
-								for (let i = 0; i < hLevel; i++) {
+							replacement: function (content, node) {
+								var hLevel = node.nodeName.charAt(1);
+								var hPrefix = "";
+								for (var i = 0; i < hLevel; i++) {
 									hPrefix += "#";
 								}
 								return (
@@ -692,50 +673,50 @@
 
 						{
 							filter: "hr",
-							replacement() {
+							replacement: function () {
 								return "\n\n* * *\n\n";
 							},
 						},
 
 						{
 							filter: ["em", "i"],
-							replacement(content) {
+							replacement: function (content) {
 								return "_" + content + "_";
 							},
 						},
 
 						{
 							filter: ["strong", "b"],
-							replacement(content) {
+							replacement: function (content) {
 								return "**" + content + "**";
 							},
 						},
 
 						// Inline code
 						{
-							filter(node) {
-								const hasSiblings =
+							filter: function (node) {
+								var hasSiblings =
 									node.previousSibling || node.nextSibling;
-								const isCodeBlock =
+								var isCodeBlock =
 									node.parentNode.nodeName === "PRE" &&
 									!hasSiblings;
 
 								return node.nodeName === "CODE" && !isCodeBlock;
 							},
-							replacement(content) {
+							replacement: function (content) {
 								return "`" + content + "`";
 							},
 						},
 
 						{
-							filter(node) {
+							filter: function (node) {
 								return (
 									node.nodeName === "A" &&
 									node.getAttribute("href")
 								);
 							},
-							replacement(content, node) {
-								const titlePart = node.title
+							replacement: function (content, node) {
+								var titlePart = node.title
 									? ' "' + node.title + '"'
 									: "";
 								return (
@@ -751,13 +732,11 @@
 
 						{
 							filter: "img",
-							replacement(content, node) {
-								const alt = node.alt || "";
-								const src = node.getAttribute("src") || "";
-								const title = node.title || "";
-								const titlePart = title
-									? ' "' + title + '"'
-									: "";
+							replacement: function (content, node) {
+								var alt = node.alt || "";
+								var src = node.getAttribute("src") || "";
+								var title = node.title || "";
+								var titlePart = title ? ' "' + title + '"' : "";
 								return src
 									? "![" +
 											alt +
@@ -772,13 +751,13 @@
 
 						// Code blocks
 						{
-							filter(node) {
+							filter: function (node) {
 								return (
 									node.nodeName === "PRE" &&
 									node.firstChild.nodeName === "CODE"
 								);
 							},
-							replacement(content, node) {
+							replacement: function (content, node) {
 								return (
 									"\n\n    " +
 									node.firstChild.textContent.replace(
@@ -792,7 +771,7 @@
 
 						{
 							filter: "blockquote",
-							replacement(content) {
+							replacement: function (content) {
 								content = content.trim();
 								content = content.replace(/\n{3,}/g, "\n\n");
 								content = content.replace(/^/gm, "> ");
@@ -802,13 +781,13 @@
 
 						{
 							filter: "li",
-							replacement(content, node) {
+							replacement: function (content, node) {
 								content = content
 									.replace(/^\s+/, "")
 									.replace(/\n/gm, "\n    ");
-								let prefix = "*   ";
-								const parent = node.parentNode;
-								const index =
+								var prefix = "*   ";
+								var parent = node.parentNode;
+								var index =
 									Array.prototype.indexOf.call(
 										parent.children,
 										node
@@ -823,10 +802,10 @@
 
 						{
 							filter: ["ul", "ol"],
-							replacement(content, node) {
-								const strings = [];
+							replacement: function (content, node) {
+								var strings = [];
 								for (
-									let i = 0;
+									var i = 0;
 									i < node.childNodes.length;
 									i++
 								) {
@@ -843,10 +822,10 @@
 						},
 
 						{
-							filter(node) {
+							filter: function (node) {
 								return this.isBlock(node);
 							},
-							replacement(content, node) {
+							replacement: function (content, node) {
 								return (
 									"\n\n" + this.outer(node, content) + "\n\n"
 								);
@@ -855,10 +834,10 @@
 
 						// Anything else!
 						{
-							filter() {
+							filter: function () {
 								return true;
 							},
-							replacement(content, node) {
+							replacement: function (content, node) {
 								return this.outer(node, content);
 							},
 						},
@@ -910,27 +889,20 @@
 						"ul",
 						"video",
 					];
-
-					// eslint-disable-next-line
 				},
 				{},
 			],
-			6: [
-				function (require, module, exports) {
-					// eslint-disable-next-line
-				},
-				{},
-			],
+			6: [function (require, module, exports) {}, {}],
 			7: [
 				function (require, module, exports) {
 					"use strict";
 
-					const voidElements = require("void-elements");
+					var voidElements = require("void-elements");
 					Object.keys(voidElements).forEach(function (name) {
 						voidElements[name.toUpperCase()] = 1;
 					});
 
-					const blockElements = {};
+					var blockElements = {};
 					require("block-elements").forEach(function (name) {
 						blockElements[name.toUpperCase()] = 1;
 					});
@@ -966,24 +938,22 @@
 					 * @param {Function} blockTest
 					 */
 					function collapseWhitespace(elem, isBlock) {
-						if (!elem.firstChild || elem.nodeName === "PRE") {
-							return;
-						}
+						if (!elem.firstChild || elem.nodeName === "PRE") return;
 
 						if (typeof isBlock !== "function") {
 							isBlock = isBlockElem;
 						}
 
-						let prevText = null;
-						let prevVoid = false;
+						var prevText = null;
+						var prevVoid = false;
 
-						let prev = null;
-						let node = next(prev, elem);
+						var prev = null;
+						var node = next(prev, elem);
 
 						while (node !== elem) {
 							if (node.nodeType === 3) {
 								// Node.TEXT_NODE
-								let text = node.data.replace(
+								var text = node.data.replace(
 									/[ \r\n\t]+/g,
 									" "
 								);
@@ -1026,7 +996,7 @@
 								continue;
 							}
 
-							const nextNode = next(prev, node);
+							var nextNode = next(prev, node);
 							prev = node;
 							node = nextNode;
 						}
@@ -1047,7 +1017,7 @@
 					 * @returns {Node} node
 					 */
 					function remove(node) {
-						const next = node.nextSibling || node.parentNode;
+						var next = node.nextSibling || node.parentNode;
 
 						node.parentNode.removeChild(node);
 
